@@ -1,5 +1,10 @@
 #!/usr/bin/env bash
 
+# Inspired from the following blog post and gists
+# https://robinpowered.com/blog/best-practice-system-for-organizing-and-tagging-github-issues/
+# https://gist.github.com/omegahm/28d87a4e1411c030aa89
+# https://gist.github.com/Chompas/fb158eb01204d03f783d
+
 declare -A LABELS
 
 # Workflow
