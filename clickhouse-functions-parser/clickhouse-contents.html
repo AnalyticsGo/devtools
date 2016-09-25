@@ -1,0 +1,579 @@
+<div id="contents"><a href="#Contents" class="contents-element" style="margin-left:0em">Contents</a>
+    <br><a href="#Introduction" class="contents-element" style="margin-left:0em">Introduction</a>
+    <br><a href="#What is ClickHouse?" class="contents-element" style="margin-left:1em">What is ClickHouse?</a>
+    <br><a href="#Distinctive features of ClickHouse" class="contents-element" style="margin-left:1em">Distinctive features of ClickHouse</a>
+    <br><a href="#ClickHouse features that can be considered disadvantages" class="contents-element" style="margin-left:1em">ClickHouse features that can be considered disadvantages</a>
+    <br><a href="#The Yandex.Metrica task" class="contents-element" style="margin-left:1em">The Yandex.Metrica task</a>
+    <br><a href="#Aggregated and non-aggregated data" class="contents-element" style="margin-left:2em">Aggregated and non-aggregated data</a>
+    <br><a href="#Usage in Yandex.Metrica and other Yandex services" class="contents-element" style="margin-left:1em">Usage in Yandex.Metrica and other Yandex services</a>
+    <br><a href="#Possible counterparts" class="contents-element" style="margin-left:1em">Possible counterparts</a>
+    <br><a href="#Possible silly questions" class="contents-element" style="margin-left:1em">Possible silly questions</a>
+    <br><a href="#Performance" class="contents-element" style="margin-left:1em">Performance</a>
+    <br><a href="#Throughput for a single large query" class="contents-element" style="margin-left:2em">Throughput for a single large query</a>
+    <br><a href="#Latency when processing short queries." class="contents-element" style="margin-left:2em">Latency when processing short queries.</a>
+    <br><a href="#Throughput when processing a large quantity of short queries." class="contents-element" style="margin-left:2em">Throughput when processing a large quantity of short queries.</a>
+    <br><a href="#Performance on data insertion." class="contents-element" style="margin-left:2em">Performance on data insertion.</a>
+    <br><a href="#Getting started" class="contents-element" style="margin-left:0em">Getting started</a>
+    <br><a href="#System requirements" class="contents-element" style="margin-left:1em">System requirements</a>
+    <br><a href="#Installation" class="contents-element" style="margin-left:1em">Installation</a>
+    <br><a href="#Installing from packages" class="contents-element" style="margin-left:2em">Installing from packages</a>
+    <br><a href="#Installing from source" class="contents-element" style="margin-left:2em">Installing from source</a>
+    <br><a href="#Other methods of installation" class="contents-element" style="margin-left:2em">Other methods of installation</a>
+    <br><a href="#Launch" class="contents-element" style="margin-left:2em">Launch</a>
+    <br><a href="#Test data" class="contents-element" style="margin-left:1em">Test data</a>
+    <br><a href="#If you have questions" class="contents-element" style="margin-left:1em">If you have questions</a>
+    <br><a href="#Interfaces" class="contents-element" style="margin-left:0em">Interfaces</a>
+    <br><a href="#HTTP interface" class="contents-element" style="margin-left:1em">HTTP interface</a>
+    <br><a href="#JDBC driver" class="contents-element" style="margin-left:1em">JDBC driver</a>
+    <br><a href="#Third-party client libraries" class="contents-element" style="margin-left:1em">Third-party client libraries</a>
+    <br><a href="#Third-party GUI" class="contents-element" style="margin-left:1em">Third-party GUI</a>
+    <br><a href="#Native interface (TCP)" class="contents-element" style="margin-left:1em">Native interface (TCP)</a>
+    <br><a href="#Command-line client" class="contents-element" style="margin-left:1em">Command-line client</a>
+    <br><a href="#Query language" class="contents-element" style="margin-left:0em">Query language</a>
+    <br><a href="#Syntax" class="contents-element" style="margin-left:1em">Syntax</a>
+    <br><a href="#Spaces" class="contents-element" style="margin-left:2em">Spaces</a>
+    <br><a href="#Comments" class="contents-element" style="margin-left:2em">Comments</a>
+    <br><a href="#Keywords" class="contents-element" style="margin-left:2em">Keywords</a>
+    <br><a href="#Identifiers" class="contents-element" style="margin-left:2em">Identifiers</a>
+    <br><a href="#Literals" class="contents-element" style="margin-left:2em">Literals</a>
+    <br><a href="#Numeric literals" class="contents-element" style="margin-left:3em">Numeric literals</a>
+    <br><a href="#String literals" class="contents-element" style="margin-left:3em">String literals</a>
+    <br><a href="#Compound literals" class="contents-element" style="margin-left:3em">Compound literals</a>
+    <br><a href="#Functions" class="contents-element" style="margin-left:2em">Functions</a>
+    <br><a href="#Operators" class="contents-element" style="margin-left:2em">Operators</a>
+    <br><a href="#Data types and database table engines" class="contents-element" style="margin-left:2em">Data types and database table engines</a>
+    <br><a href="#Synonyms" class="contents-element" style="margin-left:2em">Synonyms</a>
+    <br><a href="#Asterisk" class="contents-element" style="margin-left:2em">Asterisk</a>
+    <br><a href="#Expressions" class="contents-element" style="margin-left:2em">Expressions</a>
+    <br><a href="#Queries" class="contents-element" style="margin-left:1em">Queries</a>
+    <br><a href="#CREATE DATABASE" class="contents-element" style="margin-left:2em">CREATE DATABASE</a>
+    <br><a href="#CREATE TABLE" class="contents-element" style="margin-left:2em">CREATE TABLE</a>
+    <br><a href="#Default values" class="contents-element" style="margin-left:3em">Default values</a>
+    <br><a href="#Temporary tables" class="contents-element" style="margin-left:3em">Temporary tables</a>
+    <br><a href="#CREATE VIEW" class="contents-element" style="margin-left:2em">CREATE VIEW</a>
+    <br><a href="#ATTACH" class="contents-element" style="margin-left:2em">ATTACH</a>
+    <br><a href="#DROP" class="contents-element" style="margin-left:2em">DROP</a>
+    <br><a href="#DETACH" class="contents-element" style="margin-left:2em">DETACH</a>
+    <br><a href="#RENAME" class="contents-element" style="margin-left:2em">RENAME</a>
+    <br><a href="#ALTER" class="contents-element" style="margin-left:2em">ALTER</a>
+    <br><a href="#Column manipulations" class="contents-element" style="margin-left:3em">Column manipulations</a>
+    <br><a href="#Manipulations with partitions and parts" class="contents-element" style="margin-left:3em">Manipulations with partitions and parts</a>
+    <br><a href="#Synchronicity of ALTER queries" class="contents-element" style="margin-left:3em">Synchronicity of ALTER queries</a>
+    <br><a href="#SHOW DATABASES" class="contents-element" style="margin-left:2em">SHOW DATABASES</a>
+    <br><a href="#SHOW TABLES" class="contents-element" style="margin-left:2em">SHOW TABLES</a>
+    <br><a href="#SHOW PROCESSLIST" class="contents-element" style="margin-left:2em">SHOW PROCESSLIST</a>
+    <br><a href="#SHOW CREATE TABLE" class="contents-element" style="margin-left:2em">SHOW CREATE TABLE</a>
+    <br><a href="#DESCRIBE TABLE" class="contents-element" style="margin-left:2em">DESCRIBE TABLE</a>
+    <br><a href="#EXISTS" class="contents-element" style="margin-left:2em">EXISTS</a>
+    <br><a href="#USE" class="contents-element" style="margin-left:2em">USE</a>
+    <br><a href="#SET" class="contents-element" style="margin-left:2em">SET</a>
+    <br><a href="#OPTIMIZE" class="contents-element" style="margin-left:2em">OPTIMIZE</a>
+    <br><a href="#INSERT" class="contents-element" style="margin-left:2em">INSERT</a>
+    <br><a href="#SELECT" class="contents-element" style="margin-left:2em">SELECT</a>
+    <br><a href="#FROM clause" class="contents-element" style="margin-left:3em">FROM clause</a>
+    <br><a href="#SAMPLE clause" class="contents-element" style="margin-left:3em">SAMPLE clause</a>
+    <br><a href="#ARRAY JOIN clause" class="contents-element" style="margin-left:3em">ARRAY JOIN clause</a>
+    <br><a href="#JOIN clause" class="contents-element" style="margin-left:3em">JOIN clause</a>
+    <br><a href="#WHERE clause" class="contents-element" style="margin-left:3em">WHERE clause</a>
+    <br><a href="#PREWHERE clause" class="contents-element" style="margin-left:3em">PREWHERE clause</a>
+    <br><a href="#GROUP BY clause" class="contents-element" style="margin-left:3em">GROUP BY clause</a>
+    <br><a href="#WITH TOTALS modifier" class="contents-element" style="margin-left:4em">WITH TOTALS modifier</a>
+    <br><a href="#HAVING clause" class="contents-element" style="margin-left:3em">HAVING clause</a>
+    <br><a href="#ORDER BY clause" class="contents-element" style="margin-left:3em">ORDER BY clause</a>
+    <br><a href="#SELECT clause" class="contents-element" style="margin-left:3em">SELECT clause</a>
+    <br><a href="#DISTINCT clause" class="contents-element" style="margin-left:3em">DISTINCT clause</a>
+    <br><a href="#LIMIT clause" class="contents-element" style="margin-left:3em">LIMIT clause</a>
+    <br><a href="#UNION ALL clause" class="contents-element" style="margin-left:3em">UNION ALL clause</a>
+    <br><a href="#FORMAT clause" class="contents-element" style="margin-left:3em">FORMAT clause</a>
+    <br><a href="#IN operators" class="contents-element" style="margin-left:3em">IN operators</a>
+    <br><a href="#Distributed subqueries" class="contents-element" style="margin-left:3em">Distributed subqueries</a>
+    <br><a href="#Extreme values" class="contents-element" style="margin-left:3em">Extreme values</a>
+    <br><a href="#Notes" class="contents-element" style="margin-left:3em">Notes</a>
+    <br><a href="#External data for query processing" class="contents-element" style="margin-left:0em">External data for query processing</a>
+    <br><a href="#Table engines" class="contents-element" style="margin-left:0em">Table engines</a>
+    <br><a href="#TinyLog" class="contents-element" style="margin-left:1em">TinyLog</a>
+    <br><a href="#Log" class="contents-element" style="margin-left:1em">Log</a>
+    <br><a href="#Memory" class="contents-element" style="margin-left:1em">Memory</a>
+    <br><a href="#Merge" class="contents-element" style="margin-left:1em">Merge</a>
+    <br><a href="#Virtual columns" class="contents-element" style="margin-left:2em">Virtual columns</a>
+    <br><a href="#Distributed" class="contents-element" style="margin-left:1em">Distributed</a>
+    <br><a href="#MergeTree" class="contents-element" style="margin-left:1em">MergeTree</a>
+    <br><a href="#CollapsingMergeTree" class="contents-element" style="margin-left:1em">CollapsingMergeTree</a>
+    <br><a href="#SummingMergeTree" class="contents-element" style="margin-left:1em">SummingMergeTree</a>
+    <br><a href="#AggregatingMergeTree" class="contents-element" style="margin-left:1em">AggregatingMergeTree</a>
+    <br><a href="#Null" class="contents-element" style="margin-left:1em">Null</a>
+    <br><a href="#View" class="contents-element" style="margin-left:1em">View</a>
+    <br><a href="#MaterializedView" class="contents-element" style="margin-left:1em">MaterializedView</a>
+    <br><a href="#Set" class="contents-element" style="margin-left:1em">Set</a>
+    <br><a href="#Join" class="contents-element" style="margin-left:1em">Join</a>
+    <br><a href="#Buffer" class="contents-element" style="margin-left:1em">Buffer</a>
+    <br><a href="#Data replication" class="contents-element" style="margin-left:1em">Data replication</a>
+    <br><a href="#ReplicatedMergeTree" class="contents-element" style="margin-left:2em">ReplicatedMergeTree</a>
+    <br><a href="#ReplicatedCollapsingMergeTree" class="contents-element" style="margin-left:2em">ReplicatedCollapsingMergeTree</a>
+    <br><a href="#ReplicatedAggregatingMergeTree" class="contents-element" style="margin-left:2em">ReplicatedAggregatingMergeTree</a>
+    <br><a href="#ReplicatedSummingMergeTree" class="contents-element" style="margin-left:2em">ReplicatedSummingMergeTree</a>
+    <br><a href="#Creating replicated tables" class="contents-element" style="margin-left:2em">Creating replicated tables</a>
+    <br><a href="#Recovery after failures" class="contents-element" style="margin-left:2em">Recovery after failures</a>
+    <br><a href="#Recovery after complete data loss" class="contents-element" style="margin-left:2em">Recovery after complete data loss</a>
+    <br><a href="#Converting from MergeTree to ReplicatedMergeTree" class="contents-element" style="margin-left:2em">Converting from MergeTree to ReplicatedMergeTree</a>
+    <br><a href="#Converting from ReplicatedMergeTree to MergeTree" class="contents-element" style="margin-left:2em">Converting from ReplicatedMergeTree to MergeTree</a>
+    <br><a href="#Recovery when metadata in the ZooKeeper cluster is lost or damaged" class="contents-element" style="margin-left:2em">Recovery when metadata in the ZooKeeper cluster is lost or damaged</a>
+    <br><a href="#Resharding" class="contents-element" style="margin-left:1em">Resharding</a>
+    <br><a href="#System tables" class="contents-element" style="margin-left:0em">System tables</a>
+    <br><a href="#system.one" class="contents-element" style="margin-left:1em">system.one</a>
+    <br><a href="#system.numbers" class="contents-element" style="margin-left:1em">system.numbers</a>
+    <br><a href="#system.numbers_mt" class="contents-element" style="margin-left:1em">system.numbers_mt</a>
+    <br><a href="#system.tables" class="contents-element" style="margin-left:1em">system.tables</a>
+    <br><a href="#system.databases" class="contents-element" style="margin-left:1em">system.databases</a>
+    <br><a href="#system.processes" class="contents-element" style="margin-left:1em">system.processes</a>
+    <br><a href="#system.events" class="contents-element" style="margin-left:1em">system.events</a>
+    <br><a href="#system.clusters" class="contents-element" style="margin-left:1em">system.clusters</a>
+    <br><a href="#system.columns" class="contents-element" style="margin-left:1em">system.columns</a>
+    <br><a href="#system.dictionaries" class="contents-element" style="margin-left:1em">system.dictionaries</a>
+    <br><a href="#system.functions" class="contents-element" style="margin-left:1em">system.functions</a>
+    <br><a href="#system.merges" class="contents-element" style="margin-left:1em">system.merges</a>
+    <br><a href="#system.parts" class="contents-element" style="margin-left:1em">system.parts</a>
+    <br><a href="#system.replicas" class="contents-element" style="margin-left:1em">system.replicas</a>
+    <br><a href="#system.settings" class="contents-element" style="margin-left:1em">system.settings</a>
+    <br><a href="#system.zookeeper" class="contents-element" style="margin-left:1em">system.zookeeper</a>
+    <br><a href="#Table functions" class="contents-element" style="margin-left:0em">Table functions</a>
+    <br><a href="#merge" class="contents-element" style="margin-left:1em">merge</a>
+    <br><a href="#remote" class="contents-element" style="margin-left:1em">remote</a>
+    <br><a href="#Formats" class="contents-element" style="margin-left:0em">Formats</a>
+    <br><a href="#Native" class="contents-element" style="margin-left:1em">Native</a>
+    <br><a href="#TabSeparated" class="contents-element" style="margin-left:1em">TabSeparated</a>
+    <br><a href="#TabSeparatedWithNames" class="contents-element" style="margin-left:1em">TabSeparatedWithNames</a>
+    <br><a href="#TabSeparatedWithNamesAndTypes" class="contents-element" style="margin-left:1em">TabSeparatedWithNamesAndTypes</a>
+    <br><a href="#TabSeparatedRaw" class="contents-element" style="margin-left:1em">TabSeparatedRaw</a>
+    <br><a href="#BlockTabSeparated" class="contents-element" style="margin-left:1em">BlockTabSeparated</a>
+    <br><a href="#CSV" class="contents-element" style="margin-left:1em">CSV</a>
+    <br><a href="#CSVWithNames" class="contents-element" style="margin-left:1em">CSVWithNames</a>
+    <br><a href="#RowBinary" class="contents-element" style="margin-left:1em">RowBinary</a>
+    <br><a href="#Pretty" class="contents-element" style="margin-left:1em">Pretty</a>
+    <br><a href="#PrettyCompact" class="contents-element" style="margin-left:1em">PrettyCompact</a>
+    <br><a href="#PrettyCompactMonoBlock" class="contents-element" style="margin-left:1em">PrettyCompactMonoBlock</a>
+    <br><a href="#PrettySpace" class="contents-element" style="margin-left:1em">PrettySpace</a>
+    <br><a href="#PrettyNoEscapes" class="contents-element" style="margin-left:1em">PrettyNoEscapes</a>
+    <br><a href="#PrettyCompactNoEscapes" class="contents-element" style="margin-left:1em">PrettyCompactNoEscapes</a>
+    <br><a href="#PrettySpaceNoEscapes" class="contents-element" style="margin-left:1em">PrettySpaceNoEscapes</a>
+    <br><a href="#Vertical" class="contents-element" style="margin-left:1em">Vertical</a>
+    <br><a href="#Values" class="contents-element" style="margin-left:1em">Values</a>
+    <br><a href="#JSON" class="contents-element" style="margin-left:1em">JSON</a>
+    <br><a href="#JSONCompact" class="contents-element" style="margin-left:1em">JSONCompact</a>
+    <br><a href="#JSONEachRow" class="contents-element" style="margin-left:1em">JSONEachRow</a>
+    <br><a href="#TSKV" class="contents-element" style="margin-left:1em">TSKV</a>
+    <br><a href="#XML" class="contents-element" style="margin-left:1em">XML</a>
+    <br><a href="#Null2" class="contents-element" style="margin-left:1em">Null</a>
+    <br><a href="#Data types" class="contents-element" style="margin-left:0em">Data types</a>
+    <br><a href="#UInt8, UInt16, UInt32, UInt64, Int8, Int16, Int32, Int64" class="contents-element" style="margin-left:1em">UInt8, UInt16, UInt32, UInt64, Int8, Int16, Int32, Int64</a>
+    <br><a href="#Float32, Float64" class="contents-element" style="margin-left:1em">Float32, Float64</a>
+    <br><a href="#String" class="contents-element" style="margin-left:1em">String</a>
+    <br><a href="#Encodings" class="contents-element" style="margin-left:2em">Encodings</a>
+    <br><a href="#FixedString(N)" class="contents-element" style="margin-left:1em">FixedString(N)</a>
+    <br><a href="#Date" class="contents-element" style="margin-left:1em">Date</a>
+    <br><a href="#DateTime" class="contents-element" style="margin-left:1em">DateTime</a>
+    <br><a href="#Time zones" class="contents-element" style="margin-left:2em">Time zones</a>
+    <br><a href="#Enum" class="contents-element" style="margin-left:1em">Enum</a>
+    <br><a href="#Array(T)" class="contents-element" style="margin-left:1em">Array(T)</a>
+    <br><a href="#Tuple(T1, T2, ...)" class="contents-element" style="margin-left:1em">Tuple(T1, T2, ...)</a>
+    <br><a href="#Nested data structures" class="contents-element" style="margin-left:1em">Nested data structures</a>
+    <br><a href="#Nested(Name1 Type1, Name2 Type2, ...)" class="contents-element" style="margin-left:1em">Nested(Name1 Type1, Name2 Type2, ...)</a>
+    <br><a href="#AggregateFunction(name, types_of_arguments...)" class="contents-element" style="margin-left:1em">AggregateFunction(name, types_of_arguments...)</a>
+    <br><a href="#Special data types" class="contents-element" style="margin-left:1em">Special data types</a>
+    <br><a href="#Set2" class="contents-element" style="margin-left:2em">Set</a>
+    <br><a href="#Expression" class="contents-element" style="margin-left:2em">Expression</a>
+    <br><a href="#Boolean values" class="contents-element" style="margin-left:1em">Boolean values</a>
+    <br><a href="#Operators2" class="contents-element" style="margin-left:0em">Operators</a>
+    <br><a href="#Access operators" class="contents-element" style="margin-left:1em">Access operators</a>
+    <br><a href="#Numeric negation operator" class="contents-element" style="margin-left:1em">Numeric negation operator</a>
+    <br><a href="#Multiplication and division operators" class="contents-element" style="margin-left:1em">Multiplication and division operators</a>
+    <br><a href="#Addition and subtraction operators" class="contents-element" style="margin-left:1em">Addition and subtraction operators</a>
+    <br><a href="#Comparison operators" class="contents-element" style="margin-left:1em">Comparison operators</a>
+    <br><a href="#Operators for working with data sets" class="contents-element" style="margin-left:1em">Operators for working with data sets</a>
+    <br><a href="#Logical negation operator" class="contents-element" style="margin-left:1em">Logical negation operator</a>
+    <br><a href="#Logical " and "=" " operator"="" class="contents-element" style="margin-left:1em">Logical "AND" operator</a>
+    <br><a href="#Logical " or "=" " operator"="" class="contents-element" style="margin-left:1em">Logical "OR" operator</a>
+    <br><a href="#Conditional operator" class="contents-element" style="margin-left:1em">Conditional operator</a>
+    <br><a href="#Lambda creation operator" class="contents-element" style="margin-left:1em">Lambda creation operator</a>
+    <br><a href="#Array creation operator" class="contents-element" style="margin-left:1em">Array creation operator</a>
+    <br><a href="#Tuple creation operator" class="contents-element" style="margin-left:1em">Tuple creation operator</a>
+    <br><a href="#Associativity" class="contents-element" style="margin-left:1em">Associativity</a>
+    <br><a href="#Functions2" class="contents-element" style="margin-left:0em">Functions</a>
+    <br><a href="#Strong typing" class="contents-element" style="margin-left:2em">Strong typing</a>
+    <br><a href="#Сommon subexpression elimination" class="contents-element" style="margin-left:2em">Сommon subexpression elimination</a>
+    <br><a href="#Types of results" class="contents-element" style="margin-left:2em">Types of results</a>
+    <br><a href="#Constants" class="contents-element" style="margin-left:2em">Constants</a>
+    <br><a href="#Immutability" class="contents-element" style="margin-left:2em">Immutability</a>
+    <br><a href="#Error handling" class="contents-element" style="margin-left:2em">Error handling</a>
+    <br><a href="#Evaluation of argument expressions" class="contents-element" style="margin-left:2em">Evaluation of argument expressions</a>
+    <br><a href="#Performing functions for distributed query processing" class="contents-element" style="margin-left:2em">Performing functions for distributed query processing</a>
+    <br><a href="#Arithmetic functions" class="contents-element" style="margin-left:1em">Arithmetic functions</a>
+    <br><a href="#plus(a, b), a + b operator" class="contents-element" style="margin-left:2em">plus(a, b), a + b operator</a>
+    <br><a href="#minus(a, b), a - b operator" class="contents-element" style="margin-left:2em">minus(a, b), a - b operator</a>
+    <br><a href="#multiply(a, b), a * b operator" class="contents-element" style="margin-left:2em">multiply(a, b), a * b operator</a>
+    <br><a href="#divide(a, b), a / b operator" class="contents-element" style="margin-left:2em">divide(a, b), a / b operator</a>
+    <br><a href="#intDiv(a, b)" class="contents-element" style="margin-left:2em">intDiv(a, b)</a>
+    <br><a href="#intDivOrZero(a, b)" class="contents-element" style="margin-left:2em">intDivOrZero(a, b)</a>
+    <br><a href="#modulo(a, b), a % b operator" class="contents-element" style="margin-left:2em">modulo(a, b), a % b operator</a>
+    <br><a href="#negate(a), -a operator" class="contents-element" style="margin-left:2em">negate(a), -a operator</a>
+    <br><a href="#abs(a)" class="contents-element" style="margin-left:2em">abs(a)</a>
+    <br><a href="#Bit functions" class="contents-element" style="margin-left:1em">Bit functions</a>
+    <br><a href="#bitAnd(a, b)" class="contents-element" style="margin-left:2em">bitAnd(a, b)</a>
+    <br><a href="#bitOr(a, b)" class="contents-element" style="margin-left:2em">bitOr(a, b)</a>
+    <br><a href="#bitXor(a, b)" class="contents-element" style="margin-left:2em">bitXor(a, b)</a>
+    <br><a href="#bitNot(a)" class="contents-element" style="margin-left:2em">bitNot(a)</a>
+    <br><a href="#bitShiftLeft(a, b)" class="contents-element" style="margin-left:2em">bitShiftLeft(a, b)</a>
+    <br><a href="#bitShiftRight(a, b)" class="contents-element" style="margin-left:2em">bitShiftRight(a, b)</a>
+    <br><a href="#Comparison functions" class="contents-element" style="margin-left:1em">Comparison functions</a>
+    <br><a href="#equals, a = b and a == b operator" class="contents-element" style="margin-left:2em">equals, a = b and a == b operator</a>
+    <br><a href="#notEquals, a != b and a &lt;&gt; b operator" class="contents-element" style="margin-left:2em">notEquals, a != b and a &lt;&gt; b operator</a>
+    <br><a href="#less, &lt; operator" class="contents-element" style="margin-left:2em">less, &lt; operator</a>
+    <br><a href="#greater, &gt; operator" class="contents-element" style="margin-left:2em">greater, &gt; operator</a>
+    <br><a href="#lessOrEquals, &lt;= operator" class="contents-element" style="margin-left:2em">lessOrEquals, &lt;= operator</a>
+    <br><a href="#greaterOrEquals, &gt;= operator" class="contents-element" style="margin-left:2em">greaterOrEquals, &gt;= operator</a>
+    <br><a href="#Logical functions" class="contents-element" style="margin-left:1em">Logical functions</a>
+    <br><a href="#and, AND operator" class="contents-element" style="margin-left:2em">and, AND operator</a>
+    <br><a href="#or, OR operator" class="contents-element" style="margin-left:2em">or, OR operator</a>
+    <br><a href="#not, NOT operator" class="contents-element" style="margin-left:2em">not, NOT operator</a>
+    <br><a href="#xor" class="contents-element" style="margin-left:2em">xor</a>
+    <br><a href="#Type conversion functions" class="contents-element" style="margin-left:1em">Type conversion functions</a>
+    <br><a href="#toUInt8, toUInt16, toUInt32, toUInt64" class="contents-element" style="margin-left:2em">toUInt8, toUInt16, toUInt32, toUInt64</a>
+    <br><a href="#toInt8, toInt16, toInt32, toInt64" class="contents-element" style="margin-left:2em">toInt8, toInt16, toInt32, toInt64</a>
+    <br><a href="#toFloat32, toFloat64" class="contents-element" style="margin-left:2em">toFloat32, toFloat64</a>
+    <br><a href="#toDate, toDateTime" class="contents-element" style="margin-left:2em">toDate, toDateTime</a>
+    <br><a href="#toString" class="contents-element" style="margin-left:2em">toString</a>
+    <br><a href="#toFixedString(s, N)" class="contents-element" style="margin-left:2em">toFixedString(s, N)</a>
+    <br><a href="#toStringCutToZero(s)" class="contents-element" style="margin-left:2em">toStringCutToZero(s)</a>
+    <br><a href="#reinterpretAsUInt8, reinterpretAsUInt16, reinterpretAsUInt32, reinterpretAsUInt64" class="contents-element" style="margin-left:2em">reinterpretAsUInt8, reinterpretAsUInt16, reinterpretAsUInt32, reinterpretAsUInt64</a>
+    <br><a href="#reinterpretAsInt8, reinterpretAsInt16, reinterpretAsInt32, reinterpretAsInt64" class="contents-element" style="margin-left:2em">reinterpretAsInt8, reinterpretAsInt16, reinterpretAsInt32, reinterpretAsInt64</a>
+    <br><a href="#reinterpretAsFloat32, reinterpretAsFloat64" class="contents-element" style="margin-left:2em">reinterpretAsFloat32, reinterpretAsFloat64</a>
+    <br><a href="#reinterpretAsDate, reinterpretAsDateTime" class="contents-element" style="margin-left:2em">reinterpretAsDate, reinterpretAsDateTime</a>
+    <br><a href="#reinterpretAsString" class="contents-element" style="margin-left:2em">reinterpretAsString</a>
+    <br><a href="#Functions for working with dates and times" class="contents-element" style="margin-left:1em">Functions for working with dates and times</a>
+    <br><a href="#toYear" class="contents-element" style="margin-left:2em">toYear</a>
+    <br><a href="#toMonth" class="contents-element" style="margin-left:2em">toMonth</a>
+    <br><a href="#toDayOfMonth" class="contents-element" style="margin-left:2em">toDayOfMonth</a>
+    <br><a href="#toDayOfWeek" class="contents-element" style="margin-left:2em">toDayOfWeek</a>
+    <br><a href="#toHour" class="contents-element" style="margin-left:2em">toHour</a>
+    <br><a href="#toMinute" class="contents-element" style="margin-left:2em">toMinute</a>
+    <br><a href="#toSecond" class="contents-element" style="margin-left:2em">toSecond</a>
+    <br><a href="#toMonday" class="contents-element" style="margin-left:2em">toMonday</a>
+    <br><a href="#toStartOfMonth" class="contents-element" style="margin-left:2em">toStartOfMonth</a>
+    <br><a href="#toStartOfQuarter" class="contents-element" style="margin-left:2em">toStartOfQuarter</a>
+    <br><a href="#toStartOfYear" class="contents-element" style="margin-left:2em">toStartOfYear</a>
+    <br><a href="#toStartOfMinute" class="contents-element" style="margin-left:2em">toStartOfMinute</a>
+    <br><a href="#toStartOfHour" class="contents-element" style="margin-left:2em">toStartOfHour</a>
+    <br><a href="#toTime" class="contents-element" style="margin-left:2em">toTime</a>
+    <br><a href="#toRelativeYearNum" class="contents-element" style="margin-left:2em">toRelativeYearNum</a>
+    <br><a href="#toRelativeMonthNum" class="contents-element" style="margin-left:2em">toRelativeMonthNum</a>
+    <br><a href="#toRelativeWeekNum" class="contents-element" style="margin-left:2em">toRelativeWeekNum</a>
+    <br><a href="#toRelativeDayNum" class="contents-element" style="margin-left:2em">toRelativeDayNum</a>
+    <br><a href="#toRelativeHourNum" class="contents-element" style="margin-left:2em">toRelativeHourNum</a>
+    <br><a href="#toRelativeMinuteNum" class="contents-element" style="margin-left:2em">toRelativeMinuteNum</a>
+    <br><a href="#toRelativeSecondNum" class="contents-element" style="margin-left:2em">toRelativeSecondNum</a>
+    <br><a href="#now" class="contents-element" style="margin-left:2em">now</a>
+    <br><a href="#today" class="contents-element" style="margin-left:2em">today</a>
+    <br><a href="#yesterday" class="contents-element" style="margin-left:2em">yesterday</a>
+    <br><a href="#timeSlot" class="contents-element" style="margin-left:2em">timeSlot</a>
+    <br><a href="#timeSlots(StartTime, Duration)" class="contents-element" style="margin-left:2em">timeSlots(StartTime, Duration)</a>
+    <br><a href="#Functions for working with strings" class="contents-element" style="margin-left:1em">Functions for working with strings</a>
+    <br><a href="#empty" class="contents-element" style="margin-left:2em">empty</a>
+    <br><a href="#notEmpty" class="contents-element" style="margin-left:2em">notEmpty</a>
+    <br><a href="#length" class="contents-element" style="margin-left:2em">length</a>
+    <br><a href="#lengthUTF8" class="contents-element" style="margin-left:2em">lengthUTF8</a>
+    <br><a href="#lower" class="contents-element" style="margin-left:2em">lower</a>
+    <br><a href="#upper" class="contents-element" style="margin-left:2em">upper</a>
+    <br><a href="#lowerUTF8" class="contents-element" style="margin-left:2em">lowerUTF8</a>
+    <br><a href="#upperUTF8" class="contents-element" style="margin-left:2em">upperUTF8</a>
+    <br><a href="#reverse" class="contents-element" style="margin-left:2em">reverse</a>
+    <br><a href="#reverseUTF8" class="contents-element" style="margin-left:2em">reverseUTF8</a>
+    <br><a href="#concat(s1, s2)" class="contents-element" style="margin-left:2em">concat(s1, s2)</a>
+    <br><a href="#substring(s, offset, length)" class="contents-element" style="margin-left:2em">substring(s, offset, length)</a>
+    <br><a href="#substringUTF8(s, offset, length)" class="contents-element" style="margin-left:2em">substringUTF8(s, offset, length)</a>
+    <br><a href="#appendTrailingCharIfAbsent(s, c)" class="contents-element" style="margin-left:2em">appendTrailingCharIfAbsent(s, c)</a>
+    <br><a href="#Functions for searching strings" class="contents-element" style="margin-left:1em">Functions for searching strings</a>
+    <br><a href="#position(haystack, needle)" class="contents-element" style="margin-left:2em">position(haystack, needle)</a>
+    <br><a href="#positionUTF8(haystack, needle)" class="contents-element" style="margin-left:2em">positionUTF8(haystack, needle)</a>
+    <br><a href="#match(haystack, pattern)" class="contents-element" style="margin-left:2em">match(haystack, pattern)</a>
+    <br><a href="#extract(haystack, pattern)" class="contents-element" style="margin-left:2em">extract(haystack, pattern)</a>
+    <br><a href="#extractAll(haystack, pattern)" class="contents-element" style="margin-left:2em">extractAll(haystack, pattern)</a>
+    <br><a href="#like(haystack, pattern), haystack LIKE pattern operator" class="contents-element" style="margin-left:2em">like(haystack, pattern), haystack LIKE pattern operator</a>
+    <br><a href="#notLike(haystack, pattern), haystack NOT LIKE pattern operator" class="contents-element" style="margin-left:2em">notLike(haystack, pattern), haystack NOT LIKE pattern operator</a>
+    <br><a href="#Functions for searching and replacing in strings" class="contents-element" style="margin-left:1em">Functions for searching and replacing in strings</a>
+    <br><a href="#replaceOne(haystack, pattern, replacement)" class="contents-element" style="margin-left:2em">replaceOne(haystack, pattern, replacement)</a>
+    <br><a href="#replaceAll(haystack, pattern, replacement)" class="contents-element" style="margin-left:2em">replaceAll(haystack, pattern, replacement)</a>
+    <br><a href="#replaceRegexpOne(haystack, pattern, replacement)" class="contents-element" style="margin-left:2em">replaceRegexpOne(haystack, pattern, replacement)</a>
+    <br><a href="#replaceRegexpAll(haystack, pattern, replacement)" class="contents-element" style="margin-left:2em">replaceRegexpAll(haystack, pattern, replacement)</a>
+    <br><a href="#Functions for working with arrays" class="contents-element" style="margin-left:1em">Functions for working with arrays</a>
+    <br><a href="#empty2" class="contents-element" style="margin-left:2em">empty</a>
+    <br><a href="#notEmpty2" class="contents-element" style="margin-left:2em">notEmpty</a>
+    <br><a href="#length2" class="contents-element" style="margin-left:2em">length</a>
+    <br><a href="#emptyArrayUInt8, emptyArrayUInt16, emptyArrayUInt32, emptyArrayUInt64" class="contents-element" style="margin-left:2em">emptyArrayUInt8, emptyArrayUInt16, emptyArrayUInt32, emptyArrayUInt64</a>
+    <br><a href="#emptyArrayInt8, emptyArrayInt16, emptyArrayInt32, emptyArrayInt64" class="contents-element" style="margin-left:2em">emptyArrayInt8, emptyArrayInt16, emptyArrayInt32, emptyArrayInt64</a>
+    <br><a href="#emptyArrayFloat32, emptyArrayFloat64" class="contents-element" style="margin-left:2em">emptyArrayFloat32, emptyArrayFloat64</a>
+    <br><a href="#emptyArrayDate, emptyArrayDateTime" class="contents-element" style="margin-left:2em">emptyArrayDate, emptyArrayDateTime</a>
+    <br><a href="#emptyArrayString" class="contents-element" style="margin-left:2em">emptyArrayString</a>
+    <br><a href="#range(N)" class="contents-element" style="margin-left:2em">range(N)</a>
+    <br><a href="#array(x1, ...), [x1, ...] operator" class="contents-element" style="margin-left:2em">array(x1, ...), [x1, ...] operator</a>
+    <br><a href="#arrayElement(arr, n), arr[n] operator" class="contents-element" style="margin-left:2em">arrayElement(arr, n), arr[n] operator</a>
+    <br><a href="#has(arr, elem)" class="contents-element" style="margin-left:2em">has(arr, elem)</a>
+    <br><a href="#indexOf(arr, x)" class="contents-element" style="margin-left:2em">indexOf(arr, x)</a>
+    <br><a href="#countEqual(arr, x)" class="contents-element" style="margin-left:2em">countEqual(arr, x)</a>
+    <br><a href="#arrayEnumerate(arr)" class="contents-element" style="margin-left:2em">arrayEnumerate(arr)</a>
+    <br><a href="#arrayEnumerateUniq(arr, ...)" class="contents-element" style="margin-left:2em">arrayEnumerateUniq(arr, ...)</a>
+    <br><a href="#arrayJoin(arr)" class="contents-element" style="margin-left:2em">arrayJoin(arr)</a>
+    <br><a href="#Higher-order functions" class="contents-element" style="margin-left:1em">Higher-order functions</a>
+    <br><a href="#-&gt; operator, lambda(params, expr) function" class="contents-element" style="margin-left:2em">-&gt; operator, lambda(params, expr) function</a>
+    <br><a href="#arrayMap(func, arr1, ...)" class="contents-element" style="margin-left:2em">arrayMap(func, arr1, ...)</a>
+    <br><a href="#arrayFilter(func, arr1, ...)" class="contents-element" style="margin-left:2em">arrayFilter(func, arr1, ...)</a>
+    <br><a href="#arrayCount([func,] arr1, ...)" class="contents-element" style="margin-left:2em">arrayCount([func,] arr1, ...)</a>
+    <br><a href="#arrayExists([func,] arr1, ...)" class="contents-element" style="margin-left:2em">arrayExists([func,] arr1, ...)</a>
+    <br><a href="#arrayAll([func,] arr1, ...)" class="contents-element" style="margin-left:2em">arrayAll([func,] arr1, ...)</a>
+    <br><a href="#arraySum([func,] arr1, ...)" class="contents-element" style="margin-left:2em">arraySum([func,] arr1, ...)</a>
+    <br><a href="#arrayFirst(func, arr1, ...)" class="contents-element" style="margin-left:2em">arrayFirst(func, arr1, ...)</a>
+    <br><a href="#arrayFirstIndex(func, arr1, ...)" class="contents-element" style="margin-left:2em">arrayFirstIndex(func, arr1, ...)</a>
+    <br><a href="#Functions for splitting and merging strings and arrays" class="contents-element" style="margin-left:1em">Functions for splitting and merging strings and arrays</a>
+    <br><a href="#splitByChar(separator, s)" class="contents-element" style="margin-left:2em">splitByChar(separator, s)</a>
+    <br><a href="#splitByString(separator, s)" class="contents-element" style="margin-left:2em">splitByString(separator, s)</a>
+    <br><a href="#alphaTokens(s)" class="contents-element" style="margin-left:2em">alphaTokens(s)</a>
+    <br><a href="#Functions for working with URLs" class="contents-element" style="margin-left:1em">Functions for working with URLs</a>
+    <br><a href="#Functions that extract part of a URL" class="contents-element" style="margin-left:2em">Functions that extract part of a URL</a>
+    <br><a href="#protocol" class="contents-element" style="margin-left:3em">protocol</a>
+    <br><a href="#domain" class="contents-element" style="margin-left:3em">domain</a>
+    <br><a href="#domainWithoutWWW" class="contents-element" style="margin-left:3em">domainWithoutWWW</a>
+    <br><a href="#topLevelDomain" class="contents-element" style="margin-left:3em">topLevelDomain</a>
+    <br><a href="#firstSignificantSubdomain" class="contents-element" style="margin-left:3em">firstSignificantSubdomain</a>
+    <br><a href="#cutToFirstSignificantSubdomain" class="contents-element" style="margin-left:3em">cutToFirstSignificantSubdomain</a>
+    <br><a href="#path" class="contents-element" style="margin-left:3em">path</a>
+    <br><a href="#pathFull" class="contents-element" style="margin-left:3em">pathFull</a>
+    <br><a href="#queryString" class="contents-element" style="margin-left:3em">queryString</a>
+    <br><a href="#fragment" class="contents-element" style="margin-left:3em">fragment</a>
+    <br><a href="#queryStringAndFragment" class="contents-element" style="margin-left:3em">queryStringAndFragment</a>
+    <br><a href="#extractURLParameter(URL, name)" class="contents-element" style="margin-left:3em">extractURLParameter(URL, name)</a>
+    <br><a href="#extractURLParameters(URL)" class="contents-element" style="margin-left:3em">extractURLParameters(URL)</a>
+    <br><a href="#extractURLParameterNames(URL)" class="contents-element" style="margin-left:3em">extractURLParameterNames(URL)</a>
+    <br><a href="#URLHierarchy(URL)" class="contents-element" style="margin-left:3em">URLHierarchy(URL)</a>
+    <br><a href="#URLPathHierarchy(URL)" class="contents-element" style="margin-left:3em">URLPathHierarchy(URL)</a>
+    <br><a href="#Functions that remove part of a URL." class="contents-element" style="margin-left:2em">Functions that remove part of a URL.</a>
+    <br><a href="#cutWWW" class="contents-element" style="margin-left:3em">cutWWW</a>
+    <br><a href="#cutQueryString" class="contents-element" style="margin-left:3em">cutQueryString</a>
+    <br><a href="#cutFragment" class="contents-element" style="margin-left:3em">cutFragment</a>
+    <br><a href="#cutQueryStringAndFragment" class="contents-element" style="margin-left:3em">cutQueryStringAndFragment</a>
+    <br><a href="#cutURLParameter(URL, name)" class="contents-element" style="margin-left:3em">cutURLParameter(URL, name)</a>
+    <br><a href="#Functions for working with IP addresses" class="contents-element" style="margin-left:1em">Functions for working with IP addresses</a>
+    <br><a href="#IPv4NumToString(num)" class="contents-element" style="margin-left:2em">IPv4NumToString(num)</a>
+    <br><a href="#IPv4StringToNum(s)" class="contents-element" style="margin-left:2em">IPv4StringToNum(s)</a>
+    <br><a href="#IPv4NumToStringClassC(num)" class="contents-element" style="margin-left:2em">IPv4NumToStringClassC(num)</a>
+    <br><a href="#IPv6NumToString(x)" class="contents-element" style="margin-left:2em">IPv6NumToString(x)</a>
+    <br><a href="#IPv6StringToNum(s)" class="contents-element" style="margin-left:2em">IPv6StringToNum(s)</a>
+    <br><a href="#Functions for generating pseudo-random numbers" class="contents-element" style="margin-left:1em">Functions for generating pseudo-random numbers</a>
+    <br><a href="#rand" class="contents-element" style="margin-left:2em">rand</a>
+    <br><a href="#rand64" class="contents-element" style="margin-left:2em">rand64</a>
+    <br><a href="#Hash functions" class="contents-element" style="margin-left:1em">Hash functions</a>
+    <br><a href="#halfMD5" class="contents-element" style="margin-left:2em">halfMD5</a>
+    <br><a href="#MD5" class="contents-element" style="margin-left:2em">MD5</a>
+    <br><a href="#sipHash64" class="contents-element" style="margin-left:2em">sipHash64</a>
+    <br><a href="#sipHash128" class="contents-element" style="margin-left:2em">sipHash128</a>
+    <br><a href="#cityHash64" class="contents-element" style="margin-left:2em">cityHash64</a>
+    <br><a href="#intHash32" class="contents-element" style="margin-left:2em">intHash32</a>
+    <br><a href="#intHash64" class="contents-element" style="margin-left:2em">intHash64</a>
+    <br><a href="#SHA1" class="contents-element" style="margin-left:2em">SHA1</a>
+    <br><a href="#SHA224" class="contents-element" style="margin-left:2em">SHA224</a>
+    <br><a href="#SHA256" class="contents-element" style="margin-left:2em">SHA256</a>
+    <br><a href="#URLHash(url[, N])" class="contents-element" style="margin-left:2em">URLHash(url[, N])</a>
+    <br><a href="#Encoding functions" class="contents-element" style="margin-left:1em">Encoding functions</a>
+    <br><a href="#hex" class="contents-element" style="margin-left:2em">hex</a>
+    <br><a href="#unhex(str)" class="contents-element" style="margin-left:2em">unhex(str)</a>
+    <br><a href="#bitmaskToList(num)" class="contents-element" style="margin-left:2em">bitmaskToList(num)</a>
+    <br><a href="#bitmaskToArray(num)" class="contents-element" style="margin-left:2em">bitmaskToArray(num)</a>
+    <br><a href="#Rounding functions" class="contents-element" style="margin-left:1em">Rounding functions</a>
+    <br><a href="#floor(x[, N])" class="contents-element" style="margin-left:2em">floor(x[, N])</a>
+    <br><a href="#ceil(x[, N])" class="contents-element" style="margin-left:2em">ceil(x[, N])</a>
+    <br><a href="#round(x[, N])" class="contents-element" style="margin-left:2em">round(x[, N])</a>
+    <br><a href="#roundToExp2(num)" class="contents-element" style="margin-left:2em">roundToExp2(num)</a>
+    <br><a href="#roundDuration(num)" class="contents-element" style="margin-left:2em">roundDuration(num)</a>
+    <br><a href="#roundAge(num)" class="contents-element" style="margin-left:2em">roundAge(num)</a>
+    <br><a href="#Conditional functions" class="contents-element" style="margin-left:1em">Conditional functions</a>
+    <br><a href="#if(cond, then, else), cond ? then : else operator" class="contents-element" style="margin-left:2em">if(cond, then, else), cond ? then : else operator</a>
+    <br><a href="#Mathematical functions" class="contents-element" style="margin-left:1em">Mathematical functions</a>
+    <br><a href="#e()" class="contents-element" style="margin-left:2em">e()</a>
+    <br><a href="#pi()" class="contents-element" style="margin-left:2em">pi()</a>
+    <br><a href="#exp(x)" class="contents-element" style="margin-left:2em">exp(x)</a>
+    <br><a href="#log(x)" class="contents-element" style="margin-left:2em">log(x)</a>
+    <br><a href="#exp2(x)" class="contents-element" style="margin-left:2em">exp2(x)</a>
+    <br><a href="#log2(x)" class="contents-element" style="margin-left:2em">log2(x)</a>
+    <br><a href="#exp10(x)" class="contents-element" style="margin-left:2em">exp10(x)</a>
+    <br><a href="#log10(x)" class="contents-element" style="margin-left:2em">log10(x)</a>
+    <br><a href="#sqrt(x)" class="contents-element" style="margin-left:2em">sqrt(x)</a>
+    <br><a href="#cbrt(x)" class="contents-element" style="margin-left:2em">cbrt(x)</a>
+    <br><a href="#erf(x)" class="contents-element" style="margin-left:2em">erf(x)</a>
+    <br><a href="#erfc(x)" class="contents-element" style="margin-left:2em">erfc(x)</a>
+    <br><a href="#lgamma(x)" class="contents-element" style="margin-left:2em">lgamma(x)</a>
+    <br><a href="#tgamma(x)" class="contents-element" style="margin-left:2em">tgamma(x)</a>
+    <br><a href="#sin(x)" class="contents-element" style="margin-left:2em">sin(x)</a>
+    <br><a href="#cos(x)" class="contents-element" style="margin-left:2em">cos(x)</a>
+    <br><a href="#tan(x)" class="contents-element" style="margin-left:2em">tan(x)</a>
+    <br><a href="#asin(x)" class="contents-element" style="margin-left:2em">asin(x)</a>
+    <br><a href="#acos(x)" class="contents-element" style="margin-left:2em">acos(x)</a>
+    <br><a href="#atan(x)" class="contents-element" style="margin-left:2em">atan(x)</a>
+    <br><a href="#pow(x, y)" class="contents-element" style="margin-left:2em">pow(x, y)</a>
+    <br><a href="#Functions for working with Yandex.Metrica dictionaries" class="contents-element" style="margin-left:1em">Functions for working with Yandex.Metrica dictionaries</a>
+    <br><a href="#Multiple geobases" class="contents-element" style="margin-left:2em">Multiple geobases</a>
+    <br><a href="#regionToCity(id[, geobase])" class="contents-element" style="margin-left:2em">regionToCity(id[, geobase])</a>
+    <br><a href="#regionToArea(id[, geobase])" class="contents-element" style="margin-left:2em">regionToArea(id[, geobase])</a>
+    <br><a href="#regionToDistrict(id[, geobase])" class="contents-element" style="margin-left:2em">regionToDistrict(id[, geobase])</a>
+    <br><a href="#regionToCountry(id[, geobase])" class="contents-element" style="margin-left:2em">regionToCountry(id[, geobase])</a>
+    <br><a href="#regionToContinent(id[, geobase])" class="contents-element" style="margin-left:2em">regionToContinent(id[, geobase])</a>
+    <br><a href="#regionToPopulation(id[, geobase])" class="contents-element" style="margin-left:2em">regionToPopulation(id[, geobase])</a>
+    <br><a href="#regionIn(lhs, rhs[, geobase])" class="contents-element" style="margin-left:2em">regionIn(lhs, rhs[, geobase])</a>
+    <br><a href="#regionHierarchy(id[, geobase])" class="contents-element" style="margin-left:2em">regionHierarchy(id[, geobase])</a>
+    <br><a href="#regionToName(id[, lang])" class="contents-element" style="margin-left:2em">regionToName(id[, lang])</a>
+    <br><a href="#OSToRoot" class="contents-element" style="margin-left:2em">OSToRoot</a>
+    <br><a href="#OSIn(lhs, rhs)" class="contents-element" style="margin-left:2em">OSIn(lhs, rhs)</a>
+    <br><a href="#OSHierarchy" class="contents-element" style="margin-left:2em">OSHierarchy</a>
+    <br><a href="#SEToRoot" class="contents-element" style="margin-left:2em">SEToRoot</a>
+    <br><a href="#SEIn(lhs, rhs)" class="contents-element" style="margin-left:2em">SEIn(lhs, rhs)</a>
+    <br><a href="#SEHierarchy" class="contents-element" style="margin-left:2em">SEHierarchy</a>
+    <br><a href="#Functions for working with external dictionaries" class="contents-element" style="margin-left:1em">Functions for working with external dictionaries</a>
+    <br><a href="#dictGetUInt8, dictGetUInt16, dictGetUInt32, dictGetUInt64" class="contents-element" style="margin-left:2em">dictGetUInt8, dictGetUInt16, dictGetUInt32, dictGetUInt64</a>
+    <br><a href="#dictGetInt8, dictGetInt16, dictGetInt32, dictGetInt64" class="contents-element" style="margin-left:2em">dictGetInt8, dictGetInt16, dictGetInt32, dictGetInt64</a>
+    <br><a href="#dictGetFloat32, dictGetFloat64" class="contents-element" style="margin-left:2em">dictGetFloat32, dictGetFloat64</a>
+    <br><a href="#dictGetDate, dictGetDateTime" class="contents-element" style="margin-left:2em">dictGetDate, dictGetDateTime</a>
+    <br><a href="#dictGetString" class="contents-element" style="margin-left:2em">dictGetString</a>
+    <br><a href="#dictIsIn" class="contents-element" style="margin-left:2em">dictIsIn</a>
+    <br><a href="#dictGetHierarchy" class="contents-element" style="margin-left:2em">dictGetHierarchy</a>
+    <br><a href="#Functions for working with JSON." class="contents-element" style="margin-left:1em">Functions for working with JSON.</a>
+    <br><a href="#visitParamHas(params, name)" class="contents-element" style="margin-left:2em">visitParamHas(params, name)</a>
+    <br><a href="#visitParamExtractUInt(params, name)" class="contents-element" style="margin-left:2em">visitParamExtractUInt(params, name)</a>
+    <br><a href="#visitParamExtractInt(params, name)" class="contents-element" style="margin-left:2em">visitParamExtractInt(params, name)</a>
+    <br><a href="#visitParamExtractFloat(params, name)" class="contents-element" style="margin-left:2em">visitParamExtractFloat(params, name)</a>
+    <br><a href="#visitParamExtractBool(params, name)" class="contents-element" style="margin-left:2em">visitParamExtractBool(params, name)</a>
+    <br><a href="#visitParamExtractRaw(params, name)" class="contents-element" style="margin-left:2em">visitParamExtractRaw(params, name)</a>
+    <br><a href="#visitParamExtractString(params, name)" class="contents-element" style="margin-left:2em">visitParamExtractString(params, name)</a>
+    <br><a href="#Functions for implementing the IN operator" class="contents-element" style="margin-left:1em">Functions for implementing the IN operator</a>
+    <br><a href="#in, notIn, globalIn, globalNotIn" class="contents-element" style="margin-left:2em">in, notIn, globalIn, globalNotIn</a>
+    <br><a href="#tuple(x, y, ...), operator (x, y, ...)" class="contents-element" style="margin-left:2em">tuple(x, y, ...), operator (x, y, ...)</a>
+    <br><a href="#tupleElement(tuple, n), operator x.N" class="contents-element" style="margin-left:2em">tupleElement(tuple, n), operator x.N</a>
+    <br><a href="#Other functions" class="contents-element" style="margin-left:1em">Other functions</a>
+    <br><a href="#hostName()" class="contents-element" style="margin-left:2em">hostName()</a>
+    <br><a href="#visibleWidth(x)" class="contents-element" style="margin-left:2em">visibleWidth(x)</a>
+    <br><a href="#toTypeName(x)" class="contents-element" style="margin-left:2em">toTypeName(x)</a>
+    <br><a href="#blockSize()" class="contents-element" style="margin-left:2em">blockSize()</a>
+    <br><a href="#materialize(x)" class="contents-element" style="margin-left:2em">materialize(x)</a>
+    <br><a href="#ignore(...)" class="contents-element" style="margin-left:2em">ignore(...)</a>
+    <br><a href="#sleep(seconds)" class="contents-element" style="margin-left:2em">sleep(seconds)</a>
+    <br><a href="#currentDatabase()" class="contents-element" style="margin-left:2em">currentDatabase()</a>
+    <br><a href="#isFinite(x)" class="contents-element" style="margin-left:2em">isFinite(x)</a>
+    <br><a href="#isInfinite(x)" class="contents-element" style="margin-left:2em">isInfinite(x)</a>
+    <br><a href="#isNaN(x)" class="contents-element" style="margin-left:2em">isNaN(x)</a>
+    <br><a href="#bar" class="contents-element" style="margin-left:2em">bar</a>
+    <br><a href="#transform" class="contents-element" style="margin-left:2em">transform</a>
+    <br><a href="#arrayJoin function" class="contents-element" style="margin-left:1em">arrayJoin function</a>
+    <br><a href="#Aggregate functions" class="contents-element" style="margin-left:0em">Aggregate functions</a>
+    <br><a href="#count()" class="contents-element" style="margin-left:1em">count()</a>
+    <br><a href="#any(x)" class="contents-element" style="margin-left:1em">any(x)</a>
+    <br><a href="#anyLast(x)" class="contents-element" style="margin-left:1em">anyLast(x)</a>
+    <br><a href="#min(x)" class="contents-element" style="margin-left:1em">min(x)</a>
+    <br><a href="#max(x)" class="contents-element" style="margin-left:1em">max(x)</a>
+    <br><a href="#argMin(arg, val)" class="contents-element" style="margin-left:1em">argMin(arg, val)</a>
+    <br><a href="#argMax(arg, val)" class="contents-element" style="margin-left:1em">argMax(arg, val)</a>
+    <br><a href="#sum(x)" class="contents-element" style="margin-left:1em">sum(x)</a>
+    <br><a href="#avg(x)" class="contents-element" style="margin-left:1em">avg(x)</a>
+    <br><a href="#uniq(x)" class="contents-element" style="margin-left:1em">uniq(x)</a>
+    <br><a href="#uniqHLL12(x)" class="contents-element" style="margin-left:1em">uniqHLL12(x)</a>
+    <br><a href="#uniqExact(x)" class="contents-element" style="margin-left:1em">uniqExact(x)</a>
+    <br><a href="#groupArray(x)" class="contents-element" style="margin-left:1em">groupArray(x)</a>
+    <br><a href="#groupUniqArray(x)" class="contents-element" style="margin-left:1em">groupUniqArray(x)</a>
+    <br><a href="#median(x)" class="contents-element" style="margin-left:1em">median(x)</a>
+    <br><a href="#medianTiming(x)" class="contents-element" style="margin-left:1em">medianTiming(x)</a>
+    <br><a href="#medianDeterministic(x, determinator)" class="contents-element" style="margin-left:1em">medianDeterministic(x, determinator)</a>
+    <br><a href="#medianTimingWeighted(x, weight)" class="contents-element" style="margin-left:1em">medianTimingWeighted(x, weight)</a>
+    <br><a href="#varSamp(x)" class="contents-element" style="margin-left:1em">varSamp(x)</a>
+    <br><a href="#varPop(x)" class="contents-element" style="margin-left:1em">varPop(x)</a>
+    <br><a href="#stddevSamp(x)" class="contents-element" style="margin-left:1em">stddevSamp(x)</a>
+    <br><a href="#stddevPop(x)" class="contents-element" style="margin-left:1em">stddevPop(x)</a>
+    <br><a href="#covarSamp(x, y)" class="contents-element" style="margin-left:1em">covarSamp(x, y)</a>
+    <br><a href="#covarPop(x, y)" class="contents-element" style="margin-left:1em">covarPop(x, y)</a>
+    <br><a href="#corr(x, y)" class="contents-element" style="margin-left:1em">corr(x, y)</a>
+    <br><a href="#Parametric aggregate functions" class="contents-element" style="margin-left:1em">Parametric aggregate functions</a>
+    <br><a href="#quantile(level)(x)" class="contents-element" style="margin-left:1em">quantile(level)(x)</a>
+    <br><a href="#quantiles(level1, level2, ...)(x)" class="contents-element" style="margin-left:1em">quantiles(level1, level2, ...)(x)</a>
+    <br><a href="#quantileTiming(level)(x)" class="contents-element" style="margin-left:1em">quantileTiming(level)(x)</a>
+    <br><a href="#quantilesTiming(level1, level2, ...)(x)" class="contents-element" style="margin-left:1em">quantilesTiming(level1, level2, ...)(x)</a>
+    <br><a href="#quantileTimingWeighted(level)(x, weight)" class="contents-element" style="margin-left:1em">quantileTimingWeighted(level)(x, weight)</a>
+    <br><a href="#quantilesTimingWeighted(level1, level2, ...)(x, weight)" class="contents-element" style="margin-left:1em">quantilesTimingWeighted(level1, level2, ...)(x, weight)</a>
+    <br><a href="#quantileDeterministic(level)(x, determinator)" class="contents-element" style="margin-left:1em">quantileDeterministic(level)(x, determinator)</a>
+    <br><a href="#quantilesDeterministic(level1, level2, ...)(x, determinator)" class="contents-element" style="margin-left:1em">quantilesDeterministic(level1, level2, ...)(x, determinator)</a>
+    <br><a href="#sequenceMatch(pattern)(time, cond1, cond2, ...)" class="contents-element" style="margin-left:1em">sequenceMatch(pattern)(time, cond1, cond2, ...)</a>
+    <br><a href="#uniqUpTo(N)(x)" class="contents-element" style="margin-left:1em">uniqUpTo(N)(x)</a>
+    <br><a href="#Aggregate function combinators" class="contents-element" style="margin-left:1em">Aggregate function combinators</a>
+    <br><a href="#-If combinator. Conditional aggregate functions" class="contents-element" style="margin-left:1em">-If combinator. Conditional aggregate functions</a>
+    <br><a href="#-Array combinator. Aggregate functions for array arguments" class="contents-element" style="margin-left:1em">-Array combinator. Aggregate functions for array arguments</a>
+    <br><a href="#-State combinator" class="contents-element" style="margin-left:1em">-State combinator</a>
+    <br><a href="#-Merge combinator" class="contents-element" style="margin-left:1em">-Merge combinator</a>
+    <br><a href="#Dictionaries" class="contents-element" style="margin-left:0em">Dictionaries</a>
+    <br><a href="#Internal dictionaries" class="contents-element" style="margin-left:1em">Internal dictionaries</a>
+    <br><a href="#External dictionaries" class="contents-element" style="margin-left:1em">External dictionaries</a>
+    <br><a href="#Settings" class="contents-element" style="margin-left:0em">Settings</a>
+    <br><a href="#max_block_size" class="contents-element" style="margin-left:1em">max_block_size</a>
+    <br><a href="#max_insert_block_size" class="contents-element" style="margin-left:1em">max_insert_block_size</a>
+    <br><a href="#max_threads" class="contents-element" style="margin-left:1em">max_threads</a>
+    <br><a href="#max_compress_block_size" class="contents-element" style="margin-left:1em">max_compress_block_size</a>
+    <br><a href="#min_compress_block_size" class="contents-element" style="margin-left:1em">min_compress_block_size</a>
+    <br><a href="#max_query_size" class="contents-element" style="margin-left:1em">max_query_size</a>
+    <br><a href="#interactive_delay" class="contents-element" style="margin-left:1em">interactive_delay</a>
+    <br><a href="#connect_timeout" class="contents-element" style="margin-left:1em">connect_timeout</a>
+    <br><a href="#receive_timeout" class="contents-element" style="margin-left:1em">receive_timeout</a>
+    <br><a href="#send_timeout" class="contents-element" style="margin-left:1em">send_timeout</a>
+    <br><a href="#poll_interval" class="contents-element" style="margin-left:1em">poll_interval</a>
+    <br><a href="#max_distributed_connections" class="contents-element" style="margin-left:1em">max_distributed_connections</a>
+    <br><a href="#distributed_connections_pool_size" class="contents-element" style="margin-left:1em">distributed_connections_pool_size</a>
+    <br><a href="#connect_timeout_with_failover_ms" class="contents-element" style="margin-left:1em">connect_timeout_with_failover_ms</a>
+    <br><a href="#connections_with_failover_max_tries" class="contents-element" style="margin-left:1em">connections_with_failover_max_tries</a>
+    <br><a href="#extremes" class="contents-element" style="margin-left:1em">extremes</a>
+    <br><a href="#use_uncompressed_cache" class="contents-element" style="margin-left:1em">use_uncompressed_cache</a>
+    <br><a href="#replace_running_query" class="contents-element" style="margin-left:1em">replace_running_query</a>
+    <br><a href="#load_balancing" class="contents-element" style="margin-left:1em">load_balancing</a>
+    <br><a href="#totals_mode" class="contents-element" style="margin-left:1em">totals_mode</a>
+    <br><a href="#totals_auto_threshold" class="contents-element" style="margin-left:1em">totals_auto_threshold</a>
+    <br><a href="#default_sample" class="contents-element" style="margin-left:1em">default_sample</a>
+    <br><a href="#Restrictions on query complexity" class="contents-element" style="margin-left:1em">Restrictions on query complexity</a>
+    <br><a href="#readonly" class="contents-element" style="margin-left:2em">readonly</a>
+    <br><a href="#max_memory_usage" class="contents-element" style="margin-left:2em">max_memory_usage</a>
+    <br><a href="#max_rows_to_read" class="contents-element" style="margin-left:2em">max_rows_to_read</a>
+    <br><a href="#max_bytes_to_read" class="contents-element" style="margin-left:2em">max_bytes_to_read</a>
+    <br><a href="#read_overflow_mode" class="contents-element" style="margin-left:2em">read_overflow_mode</a>
+    <br><a href="#max_rows_to_group_by" class="contents-element" style="margin-left:2em">max_rows_to_group_by</a>
+    <br><a href="#group_by_overflow_mode" class="contents-element" style="margin-left:2em">group_by_overflow_mode</a>
+    <br><a href="#max_rows_to_sort" class="contents-element" style="margin-left:2em">max_rows_to_sort</a>
+    <br><a href="#max_bytes_to_sort" class="contents-element" style="margin-left:2em">max_bytes_to_sort</a>
+    <br><a href="#sort_overflow_mode" class="contents-element" style="margin-left:2em">sort_overflow_mode</a>
+    <br><a href="#max_result_rows" class="contents-element" style="margin-left:2em">max_result_rows</a>
+    <br><a href="#max_result_bytes" class="contents-element" style="margin-left:2em">max_result_bytes</a>
+    <br><a href="#result_overflow_mode" class="contents-element" style="margin-left:2em">result_overflow_mode</a>
+    <br><a href="#max_execution_time" class="contents-element" style="margin-left:2em">max_execution_time</a>
+    <br><a href="#timeout_overflow_mode" class="contents-element" style="margin-left:2em">timeout_overflow_mode</a>
+    <br><a href="#min_execution_speed" class="contents-element" style="margin-left:2em">min_execution_speed</a>
+    <br><a href="#timeout_before_checking_execution_speed" class="contents-element" style="margin-left:2em">timeout_before_checking_execution_speed</a>
+    <br><a href="#max_columns_to_read" class="contents-element" style="margin-left:2em">max_columns_to_read</a>
+    <br><a href="#max_temporary_columns" class="contents-element" style="margin-left:2em">max_temporary_columns</a>
+    <br><a href="#max_temporary_non_const_columns" class="contents-element" style="margin-left:2em">max_temporary_non_const_columns</a>
+    <br><a href="#max_subquery_depth" class="contents-element" style="margin-left:2em">max_subquery_depth</a>
+    <br><a href="#max_pipeline_depth" class="contents-element" style="margin-left:2em">max_pipeline_depth</a>
+    <br><a href="#max_ast_depth" class="contents-element" style="margin-left:2em">max_ast_depth</a>
+    <br><a href="#max_ast_elements" class="contents-element" style="margin-left:2em">max_ast_elements</a>
+    <br><a href="#max_rows_in_set" class="contents-element" style="margin-left:2em">max_rows_in_set</a>
+    <br><a href="#max_bytes_in_set" class="contents-element" style="margin-left:2em">max_bytes_in_set</a>
+    <br><a href="#set_overflow_mode" class="contents-element" style="margin-left:2em">set_overflow_mode</a>
+    <br><a href="#max_rows_in_distinct" class="contents-element" style="margin-left:2em">max_rows_in_distinct</a>
+    <br><a href="#max_bytes_in_distinct" class="contents-element" style="margin-left:2em">max_bytes_in_distinct</a>
+    <br><a href="#distinct_overflow_mode" class="contents-element" style="margin-left:2em">distinct_overflow_mode</a>
+    <br><a href="#max_rows_to_transfer" class="contents-element" style="margin-left:2em">max_rows_to_transfer</a>
+    <br><a href="#max_bytes_to_transfer" class="contents-element" style="margin-left:2em">max_bytes_to_transfer</a>
+    <br><a href="#transfer_overflow_mode" class="contents-element" style="margin-left:2em">transfer_overflow_mode</a>
+    <br><a href="#Settings profiles" class="contents-element" style="margin-left:1em">Settings profiles</a>
+    <br><a href="#Configuration files" class="contents-element" style="margin-left:0em">Configuration files</a>
+    <br><a href="#Access rights" class="contents-element" style="margin-left:0em">Access rights</a>
+    <br><a href="#Quotas" class="contents-element" style="margin-left:0em">Quotas</a>
+    <br>
+</div>
