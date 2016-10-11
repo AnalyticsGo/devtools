@@ -1,6 +1,6 @@
 var fs = require('fs')
 var cheerio = require('cheerio')
- var keywordsList = new Set()
+var keywordsList = new Set()
 var functionsList = new Set()
 
 var ch_parser = function(html) {
@@ -19,7 +19,7 @@ var ch_parser = function(html) {
       }
       if (keywordElement != null) {
         keywordElement.forEach(function(name) {
-          keywordsList.add(name.trim())
+          keywordsList.add(name.trim().toLowerCase())
         })
       }
     }
@@ -115,4 +115,4 @@ fs.readFile(process.argv[2], 'utf8', function(err, data) {
   file.write('\t"' + Array.from(functionsList).join('",\n\t"') + '"\n')
   file.write("]")
   file.end()
-});
+})
