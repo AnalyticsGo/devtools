@@ -72,6 +72,7 @@ var ch_parser = function(html) {
         if (functionElement != null) {
           functionElement.forEach(function(name) {
             aggregateFunctionList.add(name)
+            functionsList.add(name)
           })
         }
       }
